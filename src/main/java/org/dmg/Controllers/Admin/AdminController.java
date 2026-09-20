@@ -45,7 +45,7 @@ public class AdminController {
     }
 
     @PutMapping("/cities/{cityId}")
-    public CityResponse updateCity(@PathVariable Long cityId, @RequestBody CityRequest request) {
+    public CityResponse updateCity(@PathVariable Long cityId, @Valid @RequestBody CityRequest request) {
         return util.toCityResponse(adminService.updateCity(cityId, request));
     }
 
@@ -61,7 +61,7 @@ public class AdminController {
     }
 
     @PutMapping("/restaurants/{restaurantId}")
-    public RestaurantResponse updateRestaurant(@PathVariable Long restaurantId, @RequestBody RestaurantRequest request) {
+    public RestaurantResponse updateRestaurant(@PathVariable Long restaurantId, @Valid @RequestBody RestaurantRequest request) {
         return util.toRestaurantResponse(adminService.updateRestaurant(restaurantId, request));
     }
 

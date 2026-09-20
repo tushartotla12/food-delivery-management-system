@@ -65,7 +65,7 @@ public class CustomerController {
     @PostMapping("/orders/{orderId}/rating")
     public RatingReviewResponse submitReview(@AuthenticationPrincipal UserPrincipal principal,
                                      @PathVariable Long orderId,
-                                     @RequestBody RatingReviewRequest request) {
+                                     @Valid @RequestBody RatingReviewRequest request) {
         RatingReview review = customerService.submitReview(principal.getId(), orderId, request);
         return new RatingReviewResponse(
                 review.getId(),

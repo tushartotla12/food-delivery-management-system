@@ -40,7 +40,7 @@ public class OwnerController {
     public MenuItemResponse updateMenuItem(@AuthenticationPrincipal UserPrincipal principal,
                                            @PathVariable Long restaurantId,
                                            @PathVariable Long menuItemId,
-                                           @RequestBody MenuItemRequest request) {
+                                           @Valid @RequestBody MenuItemRequest request) {
         return ownerService.updateMenuItem(principal.getId(), restaurantId, menuItemId, request);
     }
 

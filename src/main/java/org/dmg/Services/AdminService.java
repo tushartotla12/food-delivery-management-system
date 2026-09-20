@@ -40,10 +40,10 @@ public class AdminService {
 
     @Transactional
     public User createUser(CreateUserRequest request) {
-        String name = request.name();
-        String email = request.email();
-        String phone = request.phone();
-        String password = request.password();
+        String name = request.name().trim();
+        String email = request.email().trim();
+        String phone = request.phone().trim();
+        String password = request.password().trim();
 
         if (userRepository.existsByEmail(email)) {
             throw new ConflictException("User email already exists: " + email);
@@ -64,7 +64,7 @@ public class AdminService {
 
     @Transactional
     public City createCity(CityRequest request) {
-        String name = request.name();
+        String name = request.name().trim();
         if (cityRepository.existsByName(name)) {
             throw new ConflictException("City already exists: " + name);
         }
@@ -80,7 +80,7 @@ public class AdminService {
         City city = getCity(cityId);
         if(request.name()!=null)
         {
-            String name = request.name();
+            String name = request.name().trim();
             if (!city.getName().equalsIgnoreCase(name) && cityRepository.existsByName(name)) {
                 throw new ConflictException("City already exists: " + name);
             }

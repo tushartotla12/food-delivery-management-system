@@ -52,11 +52,11 @@ public class OwnerService {
         }
         MenuItem menuItem = MenuItem.builder()
                 .restaurant(restaurant)
-                .name(request.name())
-                .description(trimToNull(request.description()))
+                .name(request.name().trim())
+                .description(trimToNull(request.description().trim()))
                 .price(request.price())
                 .stockQuantity(request.stockQuantity())
-                .available(request.available())
+                .available(request.available() == null || request.available())
                 .build();
 
         MenuItem saved = menuItemRepository.save(menuItem);
@@ -75,14 +75,14 @@ public class OwnerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Menu item not found: " + menuItemId));
         ensureOwnedRestaurant(ownerUserId, restaurantId);
 
-        if (StringUtils.hasText(request.name())) {
+        if (StringUtils.hasText(request.name().trim())) {
             menuItemRepository.findByNameAndRestaurantId(request.name(), restaurantId)
                     .ifPresent(existingItem -> {
                         if (!existingItem.getId().equals(menuItemId)) {
                             throw new BusinessRuleViolationException("Menu Item with name already exists");
                         }
                     });
-            menuItem.setName(request.name());
+            menuItem.setName(request.name().trim());
         }
         if (request.description() != null) {
             menuItem.setDescription(trimToNull(request.description()));

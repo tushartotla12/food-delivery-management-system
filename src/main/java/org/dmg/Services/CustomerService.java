@@ -61,77 +61,6 @@ public class CustomerService {
                 .toList();
     }
 
-//        @Transactional
-//        public OrderDetailsResponse placeOrder(Long customerUserId, PlaceOrderRequest request) {
-//            User customer = getCustomer(customerUserId);
-//            Restaurant restaurant = getActiveRestaurant(request.restaurantId());
-//            List<OrderItemRequest> requestedItems = request.items();
-//
-//            Map<Long, Integer> requestedQuantities = aggregateRequestedQuantities(requestedItems);
-//            List<OrderItem> orderItems = new ArrayList<>();
-//            BigDecimal totalAmount = BigDecimal.ZERO;
-//
-//            for (Map.Entry<Long, Integer> entry : requestedQuantities.entrySet()) {
-//                MenuItem menuItem = menuItemRepository.findByIdAndRestaurantIdForUpdate(entry.getKey(), restaurant.getId())
-//                        .orElseThrow(() -> new ResourceNotFoundException("Menu item not found: " + entry.getKey()));
-//
-//                int quantity = entry.getValue();
-//                if (menuItem.getStockQuantity() < quantity) {
-//                    throw new BusinessRuleViolationException("Insufficient stock for menu item: " + menuItem.getName());
-//                }
-//
-//                menuItem.setStockQuantity(menuItem.getStockQuantity() - quantity);
-//                menuItemRepository.save(menuItem);
-//
-//                OrderItem orderItem = OrderItem.builder()
-//                        .menuItem(menuItem)
-//                        .quantity(quantity)
-//                        .itemNameSnapshot(menuItem.getName())
-//                        .unitPriceSnapshot(menuItem.getPrice())
-//                        .lineTotal(menuItem.getPrice().multiply(BigDecimal.valueOf(quantity)))
-//                        .build();
-//
-//                orderItems.add(orderItem);
-//
-//                totalAmount = totalAmount.add(orderItem.getLineTotal());
-//            }
-//
-//            Order order = Order.builder()
-//                    .customer(customer)
-//                    .restaurant(restaurant)
-//                    .city(restaurant.getCity())
-//                    .deliveryAddress(requireText(
-//                            request.deliveryAddress(),
-//                            "Delivery address is required"
-//                    ))
-//                    .status(OrderStatus.PLACED)
-//                    .paymentStatus(PaymentStatus.PENDING)
-//                    .totalAmount(totalAmount)
-//                    .placedAt(LocalDateTime.now())
-//                    .orderItems(orderItems)
-//                    .build();
-//
-//            for (OrderItem orderItem : orderItems) {
-//                orderItem.setOrder(order);
-//            }
-//
-//            Payment payment = new Payment();
-//            payment.setOrder(order);
-//            payment.setAmount(totalAmount);
-//            payment.setPaymentMethod(request.paymentMethod() == null ? PaymentMethod.COD : request.paymentMethod());
-//            payment.setStatus(PaymentStatus.PENDING);
-//            order.setPayment(payment);
-//
-//            OrderStatusHistory placedHistory = addHistory(order, null, OrderStatus.PLACED, "Order placed");
-//
-//            Order saved = orderRepository.save(order);
-//            paymentRepository.save(payment);
-//
-//            notificationService.publishOrderStatusChanged(
-//                    notificationService.createNotificationFromOrder(saved, placedHistory));
-//
-//            return toDetails(saved);
-//        }
 @Transactional
 public OrderDetailsResponse placeOrder(Long customerUserId, PlaceOrderRequest request) {
 
@@ -162,7 +91,7 @@ public OrderDetailsResponse placeOrder(Long customerUserId, PlaceOrderRequest re
 
         if (menuItem.getStockQuantity() < quantity) {
             throw new BusinessRuleViolationException(
-                    "Insufficient stock for menu item: " + menuItem.getName()
+                    "Insufficient stock for menu item: " + menuItem.getName().trim()
             );
         }
 
@@ -175,7 +104,7 @@ public OrderDetailsResponse placeOrder(Long customerUserId, PlaceOrderRequest re
         OrderItem orderItem = OrderItem.builder()
                 .menuItem(menuItem)
                 .quantity(quantity)
-                .itemNameSnapshot(menuItem.getName())
+                .itemNameSnapshot(menuItem.getName().trim())
                 .unitPriceSnapshot(menuItem.getPrice())
                 .lineTotal(
                         menuItem.getPrice()
@@ -273,7 +202,7 @@ public OrderDetailsResponse placeOrder(Long customerUserId, PlaceOrderRequest re
                 .customer(order.getCustomer())
                 .restaurantRating(request.restaurantRating())
                 .partnerRating(request.partnerRating())
-                .reviewComment(request.reviewComment())
+                .reviewComment(request.reviewComment().trim())
                 .build();
         return ratingReviewRepository.save(review);
     }
@@ -392,17 +321,6 @@ public OrderDetailsResponse placeOrder(Long customerUserId, PlaceOrderRequest re
                 city == null ? null : city.getName(),
                 restaurant.getStatus(),
                 restaurant.getActive());
-    }
-
-    private MenuItemResponse toMenuItemResponse(MenuItem menuItem) {
-        return new MenuItemResponse(
-                menuItem.getId(),
-                menuItem.getRestaurant().getId(),
-                menuItem.getName(),
-                menuItem.getDescription(),
-                menuItem.getPrice(),
-                menuItem.getStockQuantity(),
-                menuItem.getAvailable());
     }
 
     private String requireText(String value, String message) {
