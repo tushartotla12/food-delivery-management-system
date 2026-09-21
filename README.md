@@ -203,24 +203,26 @@ On macOS/Linux:
 - cancel order: `PATCH /api/customers/orders/{orderId}/cancel`
 - submit review: `POST /api/customers/orders/{orderId}/rating`
 
-##BASIC LIFE CYCLE  FLOW OF ORDER
+## BASIC LIFE CYCLE  FLOW OF ORDER
 
-customer browses city and chooses one
-customer browses restaurant from choosen city and chooses one
-customer browses menu item of chosen restaurant
-customer places the order
-restaurant owner accepts/rejects order
-restaurant owner changes the state of order to preparing
-restaurant owner changes the state of order to ready to pickup - delivery assignment gets created at this step
-delivery partner accepts/rejects the delivery assignment
-delivery partner changes the state of delivery assignment to picked up
-delivery partner changes the state of delivery assignment to out for delivery
-customer completes the payment for the order changing it state to captured from pending
-delivery partner changes the state of delivery assignment to delivered
+- customer browses city and chooses one
+- customer browses restaurant from choosen city and chooses one
+- customer browses menu item of chosen restaurant
+- customer places the order
+- restaurant owner accepts/rejects order
+- restaurant owner changes the state of order to preparing
+- restaurant owner changes the state of order to ready to pickup - delivery assignment gets created at this step
+- delivery partner accepts/rejects the delivery assignment
+- delivery partner changes the state of delivery assignment to picked up
+- delivery partner changes the state of delivery assignment to out for delivery
+- customer completes the payment for the order changing it state to captured from pending
+- delivery partner changes the state of delivery assignment to delivered
+- customer rates/review the order
 
 
-###Important Note
-Validations of state is done at every level - placed order cannot be pickedup before accepted and so on.
-Before an order can be moved to delivery, payment must already be captured. The delivery partner flow rejects unpaid orders.
+### Important Note
+- validations of state is done at every level - placed order cannot be pickedup before accepted and so on.
+- before an order can be moved to delivery, payment must already be captured. The delivery partner flow rejects unpaid orders.
+- customer can review/rate the order after order is in delivered state
 
 
