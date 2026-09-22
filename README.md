@@ -188,7 +188,7 @@ On macOS/Linux:
 ./mvnw test
 
 ## API Notes
-
+- To fetch curls of API: run the application and access it through (http://localhost:8080/swagger-ui/index.html) | Basic Authentication of username password is to be enabled for every api.
 ### Base URLs
 
 - `/api/admin`
